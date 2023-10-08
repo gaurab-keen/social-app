@@ -1,0 +1,13 @@
+.instagram-media {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .instagram-image {
+    width: 100%; /* Make images responsive, adjust as needed */
+    max-width: 300px;/* Limit the maximum width of images */
+    
+    height: auto; /* Maintain aspect ratio */
+    margin: 10px; /* Add some spacing between images */
+  }
