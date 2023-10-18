@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
   entry: './src/index.js', // Entry point of your React app
@@ -7,6 +8,7 @@ module.exports = {
     filename: 'bundle.js', // Name of the bundled JavaScript file
     path: path.resolve(__dirname, 'dist'), // Output directory
   },
+  
   module: {
     rules: [
         {
@@ -26,9 +28,11 @@ module.exports = {
       ],
   },
   plugins: [
+    
     new HtmlWebpackPlugin({
       template: 'public/index.html', // Template HTML file
       filename: 'index.html', // Name of the output HTML file
     }),
+    new CleanWebpackPlugin()
   ],
 };

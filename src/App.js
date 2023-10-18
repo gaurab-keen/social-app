@@ -1,44 +1,69 @@
-
-
 import React ,{useEffect,useState,useRef} from 'react';
-import axios from 'axios';
-import InstagramMedia from './InstagramMedia';
-import TwitterText from './TweeterText';
+import InstagramMedia from './instagram/InstagramMedia';
+import TweeterPage from './twitterApp/TweeterPage';
+import YoutubePage from './youtube/YoutubePage';
+import FacebookMedia from './facebook/FacebookMedia';
+import SocialPage from './customsocial/SocialPage'
 
-const accessToken = 'IGQWROOWo1QjFBM18ybFZABcVR3VjBnZAG9jZAFdGSE82VmstWllfcVRjTFBGWmo3RnpKamhDNEpzLVBieVhkc3p1QjRxYmhrbGxmRjhLNFZA4V3I3cUlrSldvV00xSmY1U0gtdnQ3N0xmdUYwQ1RPUk1nZAHdXR081ZAUkZD';
- const userId="6775431555878039"
+
+
+//AIzaSyDH_6XrkiNRQ3ws2PRfFiOlhe3pfV_qF_s
 
 function App() {
  
   let callApi = useRef(true)
-  const [getAllMedia,setAllMedia]=useState([])
+  const [getMediaData,setMediaData]= useState({})
+  const [getMediaType,setMediaType]= useState('')
 
-  useEffect(()=>{
-    console.log('0000000 kkkkkkkk');
+  useEffect(() => {
     if(callApi.current){
-      console.log('0000000');
       callApi.current=false
-       getInstaData()
-      }     
-  },[])
-
-  const getInstaData= ()=>{
-          axios.get(`https://graph.instagram.com/v12.0/${userId}/media?fields=caption,media_url,media_type,thumbnail_url,permalink,timestamp&access_token=${accessToken}`)
-        .then(response => {
-          const feeds = response.data.data;
-          setAllMedia(feeds)
-          // Process and display the feeds in your React app
-        })
-        .catch(error => {
-          console.error('Error fetching Instagram feeds:', error);
-        });
-  }
+      // getInstaData()
+      function receiveMessage(event) {
+        if (event.origin === 'http://localhost') {
+          const receivedData = event.data;
+          console.log('Received data in React:', receivedData);
+          if(receivedData!=null || receivedData!==undefined){
+            setMediaType(receivedData.media_type)
+            setMediaData(receivedData)
+            console.log('Data Set on use State token is :', );
+          
+          }     
+      }  
+    }
+    // Add an event listener to listen for messages
+    window.addEventListener('message', receiveMessage);
+    // Clean up the event listener when the component unmounts
+    return () => {
+      window.removeEventListener('message', receiveMessage);
+    };
+    } 
+  }, []); 
 
   return (
     <div className="App">
-  
-          <InstagramMedia  mediaUrls={getAllMedia} />
-          {/* <TwitterText></TwitterText> */}
+        {getMediaType==='instagram' ?
+          (
+            <InstagramMedia  mediaData={getMediaData} />
+          )
+          : getMediaType==='youtube' ?
+          (
+            <YoutubePage mediaData={getMediaData} ></YoutubePage>
+            
+          ): getMediaType==='twitter' ?
+          (
+            <TweeterPage mediaData={getMediaData} ></TweeterPage>
+          ):
+          getMediaType==='facebook' ?
+          (
+            <FacebookMedia  mediaData={getMediaData}></FacebookMedia>
+          ): getMediaType==='custom' ?
+          (
+            <SocialPage  mediaData={getMediaData}></SocialPage>
+          ):null
+          
+          
+        }
     </div>
   );
 }
